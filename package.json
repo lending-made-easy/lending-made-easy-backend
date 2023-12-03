@@ -2,7 +2,6 @@
   "name": "lending-made-easy-backend",
   "version": "1.0.0",
   "description": "backend for lending made easy",
-  "main": "server.js",
   "scripts": {
     "start": "nodemon --exec babel-node server.js"
   },
