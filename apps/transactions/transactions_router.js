@@ -15,7 +15,7 @@ transactions_router.get(
   get_transactions_by_user
 );
 transactions_router.get(
-  "/:status(success|pending|failed)",
+  "/:status(success|pending|failed|all)",
   get_transactions_by_status
 );
 transactions_router.get("*", (req, res) => {

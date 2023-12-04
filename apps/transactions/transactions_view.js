@@ -16,7 +16,7 @@ export const record_transaction = async (req, res) => {
   });
   const lender = await users_model.findOne({ user_id: lender_id });
   const borrower = await users_model.findOne({ user_id: borrower_id });
-  if (lender.user_type === "lender" && borrower.user_type === "borrower") {
+  if (lender?.user_type === "lender" && borrower?.user_type === "borrower") {
     try {
       await transaction.save();
       await lender.updateOne({
@@ -26,7 +26,7 @@ export const record_transaction = async (req, res) => {
         wallet_balance: borrower.wallet_balance - amount,
       });
       res.status(200).json({
-        message: `transaction recorded with transaction_id: ${transaction_id}, amount: ${amount}, lender_id: ${lender_id}, borrower_id: ${borrower_id} and transaction_time: ${transaction_time}`,
+        message: `transaction recorded with transaction_id: ${transaction_id}, amount: ${amount}, lender_id: ${lender_id}, borrower_id: ${borrower_id}`,
       });
     } catch (error) {
       console.log(error);
@@ -75,9 +75,14 @@ export const get_transactions_by_user = async (req, res) => {
 export const get_transactions_by_status = async (req, res) => {
   const { status } = req.params;
   try {
-    const transactions = await transaction_model.find({
-      transaction_status: status,
-    });
+    let transactions;
+    if (status === "all") {
+      transactions = await transaction_model.find();
+    } else {
+      transactions = await transaction_model.find({
+        transaction_status: status,
+      });
+    }
     res.status(200).json(transactions);
   } catch (error) {
     console.log(error);
