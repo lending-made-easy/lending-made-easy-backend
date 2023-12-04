@@ -1,4 +1,4 @@
-export const create_user_id = (prefix, randomCount) => {
+export const create_id = (prefix, randomCount) => {
   const characters =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; // 62 char long
   let random_id = prefix;
