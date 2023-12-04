@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import config, { create_config } from "./config/config";
 import users_router from "./apps/users/users_router";
+import transactions_router from "./apps/transactions/transactions_router";
 
 const app = express();
 app.use(cors());
@@ -10,6 +11,7 @@ app.use(express.json());
 
 // Define routes and middleware...
 app.use("/users", users_router);
+app.use("/transactions", transactions_router);
 
 const init_app = async () => {
   await create_config();
@@ -19,10 +21,7 @@ const init_app = async () => {
 
   // Connect to MongoDB
   try {
-    mongoose.connect(config.MONGODB_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    mongoose.connect(config.MONGODB_URL);
   } catch (error) {
     console.log(error);
   }

@@ -1,9 +1,9 @@
 import users_model from "./users_model";
-import { create_user_id } from "../../utils/create_id";
+import { create_id } from "../../utils/create_id";
 
 const create_user = async (req, res) => {
   const { name, phone, type } = req.body;
-  const id = create_user_id("uid", 12);
+  const id = create_id("uid", 12);
   const user = new users_model({
     user_id: id,
     user_phone: phone,
