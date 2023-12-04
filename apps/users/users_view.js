@@ -23,19 +23,35 @@ const create_user = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(400).json(error);
+    res.status(400).json({ message: `Something went wrong` });
   }
 };
 
-const get_user_by_id = (req, res) => {
-  const { user_id } = req.params;
-  res
-    .status(200)
-    .json({ message: `user details fetched for user_id: ${user_id}` });
+const get_user_by_id = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await users_model.findOne({ user_id: id });
+    res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: `Something went wrong` });
+  }
 };
 
-const get_all_users = (req, res) => {
-  res.status(200).json({ message: `all users details fetched` });
+const get_all_users = async (req, res) => {
+  const { type } = req.params;
+  try {
+    let users;
+    if (type == "all") {
+      users = await users_model.find();
+    } else {
+      users = await users_model.find({ user_type: type }).exec();
+    }
+    res.status(200).json(users);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: `Something went wrong` });
+  }
 };
 
 export { create_user, get_user_by_id, get_all_users };
