@@ -18,10 +18,14 @@ const init_app = async () => {
   const PORT = config.PORT;
 
   // Connect to MongoDB
-  mongoose.connect(config.MONGODB_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  try {
+    mongoose.connect(config.MONGODB_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 
   // Run the server
   app.listen(PORT, () => {
