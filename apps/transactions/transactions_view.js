@@ -94,21 +94,21 @@ export const get_transaction_by_id = async (req, res) => {
 };
 
 export const get_transactions_by_user = async (req, res) => {
-  const { user_id, user_type } = req.params;
+  const { user_id, status } = req.params;
   try {
+    const user = await users_model.findOne({ user_id });
+    const search_key =
+      user.user_type === "lender" ? "lender_id" : "borrower_id";
     let transactions;
-    switch (user_type) {
+    switch (status) {
       case "all":
+        transactions = await transaction_model.find({ [search_key]: user_id });
+        break;
+      default:
         transactions = await transaction_model.find({
-          $or: [{ lender_id: user_id }, { borrower_id: user_id }],
+          [search_key]: user_id,
+          transaction_status: status,
         });
-        break;
-      case "lender":
-        transactions = await transaction_model.find({ lender_id: user_id });
-        break;
-      case "borrower":
-        transactions = await transaction_model.find({ borrower_id: user_id });
-        break;
     }
     res.status(200).json(transactions);
   } catch (error) {
