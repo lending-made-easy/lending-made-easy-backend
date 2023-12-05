@@ -24,6 +24,6 @@ const users_schema = new mongoose.Schema({
   wallet_balance: { type: Number, default: 0 },
 });
 
-const users_model = mongoose.model("Users", users_schema);
+const users_model = mongoose.model("users", users_schema);
 
 export default users_model;
