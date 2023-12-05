@@ -28,6 +28,10 @@ const transaction_schema = new mongoose.Schema({
     required: true,
     enum: ["success", "pending", "failed"],
   },
+  offer_request_id: {
+    type: String,
+    required: true,
+  },
 });
 
 const transaction_model = mongoose.model("transactions", transaction_schema);

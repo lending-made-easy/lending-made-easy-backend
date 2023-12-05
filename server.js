@@ -15,7 +15,7 @@ app.use("/users", users_router);
 app.use("/transactions", transactions_router);
 app.use("/offer_requests", offer_requests_router);
 
-const init_app = async () => {
+(async function () {
   await create_config();
   // console.log(config);
 
@@ -32,6 +32,4 @@ const init_app = async () => {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
-};
-
-init_app();
+})();
