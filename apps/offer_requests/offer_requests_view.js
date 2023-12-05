@@ -1,5 +1,6 @@
 import { create_id } from "../../utils/create_id";
 import offer_request_model from "./offer_requests_model";
+import users_model from "./../users/users_model";
 
 export const create_offer_request = async (req, res) => {
   const { amount, lender_id, borrower_id } = req.body;
@@ -21,7 +22,8 @@ export const create_offer_request = async (req, res) => {
     try {
       await offer_request.save();
       res.status(200).json({
-        message: `new offer request placed with offer_request_id: ${offer_request_id}, offer_amount: ${amount}, lender_id: ${lender_id}, borrower_id: ${borrower_id}`,
+        message: `new offer request placed`,
+        data: offer_request,
       });
     } catch (error) {
       console.log(error);
@@ -60,19 +62,21 @@ export const update_offer_request = async (req, res) => {
       if (status === "accepted") {
         if (user_id === lender_id) {
           const updated_status = borrower_approval ? "accepted" : "open";
-          offer_request.updateOne({
+          await offer_request.updateOne({
             lender_approval: true,
             offer_request_status: updated_status,
           });
         } else if (user_id === borrower_id) {
           const updated_status = lender_approval ? "accepted" : "open";
-          offer_request.updateOne({
+          await offer_request.updateOne({
             borrower_approval: true,
             offer_request_status: updated_status,
           });
         }
       } else if (status === "canceled") {
-        offer_request.updateOne({ offer_request_status: "cancelled" });
+        await offer_request.updateOne({
+          offer_request_status: "cancelled",
+        });
       } else if (status === "open") {
         let updated_lender_approval, updated_borrower_approval;
         if (user_id === lender_id) {
@@ -82,20 +86,22 @@ export const update_offer_request = async (req, res) => {
           updated_lender_approval = false;
           updated_borrower_approval = true;
         } else {
-          console.log(
-            `user_id: ${user_id} lender_id: ${lender_id} borrower_id: ${borrower_id}`
-          );
           res
             .status(404)
             .json({ message: `User is not a part of this offer request` });
+          return;
         }
-        offer_request.updateOne({
-          offer_amount: amount,
-          lender_approval: updated_lender_approval,
-          borrower_approval: updated_borrower_approval,
-          offer_request_status: "open",
-        });
+        await offer_request.updateOne(
+          {
+            offer_amount: amount,
+            lender_approval: updated_lender_approval,
+            borrower_approval: updated_borrower_approval,
+            offer_request_status: "open",
+          },
+          { new: true }
+        );
       }
+      res.status(200).json({ message: "offer request updated" });
     }
   } catch (error) {
     console.log(error);

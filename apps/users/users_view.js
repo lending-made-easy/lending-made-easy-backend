@@ -13,13 +13,11 @@ const create_user = async (req, res) => {
     },
     user_type: type,
   });
-  console.log(
-    `user trying to register with user_id: ${id}, name: ${name}, phone: ${phone}, type: ${type}`
-  );
   try {
     await user.save();
     res.status(200).json({
-      message: `user registered with user_id: ${id}, name: ${name}, phone: ${phone}, type: ${type}`,
+      message: `user registered`,
+      data: user,
     });
   } catch (error) {
     console.log(error);
