@@ -4,19 +4,19 @@ import transaction_model from "./transactions_model";
 
 export const record_transaction = async (req, res) => {
   const { amount, lender_id, borrower_id } = req.body;
-  const transaction_id = create_id("txnid", 15);
-  const transaction_status = "success"; //would be used for tracking transactions
-  const transaction = new transaction_model({
-    transaction_id,
-    amount,
-    lender_id,
-    borrower_id,
-    transaction_time: new Date(),
-    transaction_status,
-  });
   const lender = await users_model.findOne({ user_id: lender_id });
   const borrower = await users_model.findOne({ user_id: borrower_id });
   if (lender?.user_type === "lender" && borrower?.user_type === "borrower") {
+    const transaction_id = create_id("txnid", 15);
+    const transaction_status = "success"; //would be used for tracking transactions
+    const transaction = new transaction_model({
+      transaction_id,
+      amount,
+      lender_id,
+      borrower_id,
+      transaction_time: new Date(),
+      transaction_status,
+    });
     try {
       await transaction.save();
       await lender.updateOne({
@@ -49,10 +49,10 @@ export const get_transaction_by_id = async (req, res) => {
 };
 
 export const get_transactions_by_user = async (req, res) => {
-  const { user_id, type } = req.params;
+  const { user_id, user_type } = req.params;
   try {
     let transactions;
-    switch (type) {
+    switch (user_type) {
       case "all":
         transactions = await transaction_model.find({
           $or: [{ lender_id: user_id }, { borrower_id: user_id }],

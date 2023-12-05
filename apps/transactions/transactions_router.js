@@ -11,7 +11,7 @@ const transactions_router = express.Router();
 transactions_router.post("/", record_transaction);
 transactions_router.get("/:id(txnid[a-zA-Z0-9]{15})", get_transaction_by_id);
 transactions_router.get(
-  "/:user_id(uid[a-zA-Z0-9]{12})/:type(lender|borrower|all)",
+  "/:user_id(uid[a-zA-Z0-9]{12})/:user_type(lender|borrower|all)",
   get_transactions_by_user
 );
 transactions_router.get(
