@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "backend for lending made easy",
   "scripts": {
-    "start": "nodemon --exec babel-node server.js"
+    "start": "nodemon --exec babel-node src/server.js",
+    "build": "babel src -d dist && node dist/server.js"
   },
   "author": "Suryakanta Indrajit",
   "license": "ISC",
