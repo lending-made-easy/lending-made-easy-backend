@@ -2,26 +2,33 @@ import users_model from "./users_model";
 import { create_id } from "../../utils/create_id";
 
 const create_user = async (req, res) => {
-  const { name, phone, type } = req.body;
-  const id = create_id("uid", 12);
-  const user = new users_model({
-    user_id: id,
-    user_phone: phone,
-    user_name: {
-      first_name: name.firstName,
-      last_name: name.lastName,
-    },
-    user_type: type,
-  });
-  try {
-    await user.save();
-    res.status(200).json({
-      message: `user registered`,
-      data: user,
+  const { name, phone, type, user_id } = req.body;
+  // For Login User gonna provide user_id and phone number...
+  if (user_id) {
+      const user = await users_model.findOne({ user_id, user_phone: phone });
+      if(user) res.status(200).json(user);
+      else res.status(404).json({ message: `No such user found` });
+  } else {
+    const id = create_id("uid", 12);
+    const user = new users_model({
+      user_id: id,
+      user_phone: phone,
+      user_name: {
+        first_name: name.firstName,
+        last_name: name.lastName,
+      },
+      user_type: type,
     });
-  } catch (error) {
-    console.log(error);
-    res.status(400).json({ message: `Something went wrong` });
+    try {
+      await user.save();
+      res.status(200).json({
+        message: `user registered`,
+        data: user,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(400).json({ message: `Something went wrong` });
+    }
   }
 };
 
